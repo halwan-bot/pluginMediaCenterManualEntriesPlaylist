@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="mediaCenterContent">
+<head lang="en">
+
+    <!--SDK js-->
+    <script src="../../../../scripts/buildfire.min.js"></script>
+    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../../scripts/angular/angular-route.min.js"></script>
+    <script src="../../../../scripts/angular/angular-animate.min.js"></script>
+    <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
+    <script src="../../../../scripts/tinymce/tinymce.min.js"></script>
+    <script src="../../../../scripts/tinymce/ui-tinymce.js"></script>
+    <script src="../../../../scripts/sortable.min.js"></script>
+    <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
+    <script src="../../../../scripts/buildfire/components/actionItems/sortableList.js"></script>
+    <script
+       src="../../../../scripts/buildfire/components/images/thumbnail.js"></script>
+    <script src="../../../../scripts/buildfire/services/searchEngine/searchEngine.js"></script>
+    
+    <!-- JS -->
+    <script src="../../../../scripts/jquery/jquery-ui.min.js"></script>
+    <script src="assets/js/sortable.js"></script>
+    <script src="../../../../scripts/angular/ng-infinite-scroll.custom.js"></script>
+    <script src="../../widget/js/shared/Deeplink.js"></script>
+    <script src="assets/js/angular-csv.js"></script>
+    <script src="assets/js/ng-clip.min.js"></script>
+    <script src="assets/js/ZeroClipboard.min.js"></script>
+
+    <script src="app.js"></script>
+    <script src="enums.js"></script>
+    <script src="services.js"></script>
+    <script src="filters.js"></script>
+    <script src="directives.js"></script>
+    <script src="modals.js"></script>
+    <!-- Controllers -->
+    <script src="controllers/content.home.controller.js"></script>
+    <script src="controllers/content.media.controller.js"></script>
+    <link rel="stylesheet" href="../../../../styles/transitionAnimation.css">
+    <meta charset="UTF-8">
+
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="assets/css/jquery-ui.css"/> -->
+    <link href="../../../../styles/helper.css" rel="stylesheet">
+    <link href="../../../../styles/siteIcons.css" rel="stylesheet">
+    <!-- <link href="assets/css/control.content.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="../content/assets/css/reset.css">
+    <link rel="stylesheet" href="../content/assets/css/bf_base.css">
+    <link rel="stylesheet" href="../content/assets/css/sortable.css">
+</head>
+<body style="overflow:auto; overflow:initial;">
+<div class="main_view">
+    <div class="content infinite-scroll-parent padded-sm" ng-view=""></div>
+</div>
+</body>
+</html>

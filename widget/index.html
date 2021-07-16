@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html ng-app="mediaCenterWidget">
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- CSS -->
+    <link href="../../../styles/helper.css" rel="stylesheet">
+    <link href="../../../styles/siteIcons.css" rel="stylesheet">
+    <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet">
+    <link href="../../../styles/transitionAnimation.css" rel="stylesheet">
+    <link href="assets/css/widget.app.css" rel="stylesheet">
+    <link href="assets/css/videogular.css" rel="stylesheet">
+    <link href="assets/css/media.css" rel="stylesheet">
+    <!--SDK js-->
+    <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../scripts/smartcrop.js"></script>
+    <script src="../../../scripts/buildfire.min.js"></script>
+    <script src="../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../scripts/angular/angular-route.min.js"></script>
+    <script src="../../../scripts/angular/angular-animate.min.js"></script>
+    <script src="../../../scripts/angular/ui-bootstrap.min.js"></script>
+    <script src="../../../scripts/owlCarousel/owlCarousel.js"></script>
+    <!-- JS -->
+    <script src="js/shared/stringsConfig.js"></script>
+    <script src="js/shared/strings.js"></script>
+    <script src="../../../scripts/angular/ng-infinite-scroll.custom.js"></script>
+
+    <script src="https://player.vimeo.com/api/player.js"></script>
+
+    <!--app js-->
+    <script src="app.js"></script>
+    <script src="enums.js"></script>
+    <script src="services.js"></script>
+    <script src="directives.js"></script>
+    <script src="filters.js"></script>
+    <script src="modals.js"></script>
+    <script src="bookmarkHandler.js"></script>
+    <!--controllers js-->
+    <script src="controllers/widget.home.controller.js"></script>
+    <script src="controllers/widget.media.controller.js"></script>
+    <script src="controllers/widget.nowplaying.controller.js"></script>
+
+    <!--carousel-->
+    <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
+
+    <script src="assets/js/angular-sanitize.min.js"></script>
+    <script src="assets/js/videogular.min.js"></script>
+    <script src="assets/js/vg-youtube.min.js"></script>
+    <script src="assets/js/vg-vimeo.min.js"></script>
+    <script src="assets/js/vg-controls.min.js"></script>
+    <script src="assets/js/vg-overlay-play.min.js"></script>
+    <script src="../../../scripts/angular/angular-touch.js"></script>
+    <script src="../../../scripts/buildfire/components/toast/toast.js"></script>
+
+    <!-- Audio player-->
+    <script src="../../../scripts/buildfire/services/media/audioPlayer.js"></script>
+    <script src="../../../scripts/buildfire/services/notifications/localNotifications.js"></script>
+</head>
+
+<body class="body-scroll">
+    <div class="main_view">
+        <div ng-class="showFeed ? 'showing' : 'notshowing'" data-back-img="{{backgroundImage}}" id="feedView" class="content slide infinite-scroll-parent" >
+            <div ng-controller="WidgetHomeCtrl as WidgetHome">
+                <div ng-include="'templates/home.html'">
+                </div>
+            </div>
+        </div>
+        <div ng-class="WidgetHome.deepLink ? 'noSlide' : 'slide'"
+            data-back-img="{{backgroundImage}}"
+            ng-view=""
+            class="content"
+            ng-if="!showFeed"></div>
+
+        <div class="ng-hide" ng-click="showFeed = true;" id="showFeedBtn"></div>
+    </div>
+
+    <div style="position: absolute; bottom: 0; right: 0; width: 100%;" ng-if="globalPlaylist && !loadingGlobalPlaylist && showGlobalPlaylistButtons">
+        <button
+            class="btn btn-primary"
+            ng-disabled="addAllToPlaylistLoading"
+            ng-click="addAllToGlobalPlaylist($event)"
+            style="
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                border-top-left-radius: 0;
+                float: left;
+                transition: none;
+            "
+            ng-style="{'width': globalPlaylistPluginInstalled && globalPlaylistPluginName ? '49.5%' : '100%'}"
+        >
+            {{ addAllToPlaylistLoading ? areAllInGlobalPlaylist() ? 'Removing...' : 'Adding...' : areAllInGlobalPlaylist() ? 'Remove All From Playlist' : 'Add All To Playlist' }}
+        </button>
+        <button
+            class="btn btn-primary"
+            ng-if="globalPlaylist"
+            ng-click="goToPlaylistPlugin()"
+            style="
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+                border-top-right-radius: 0;
+                width: 49.5%;
+                float: right;
+                transition: none;
+            "
+            ng-class="{'hidden': !globalPlaylistPluginInstalled || !globalPlaylistPluginName}"
+        >
+            Go To Playlist
+        </button>
+    </div>
+    
+    <div id="countdownOverlay" ng-class="{'h30': showCountdown}">
+        <div class="overlay-content">
+            <h5 class="margin-top-zero">{{delayCountdownText}}</h5>
+            <br />
+            <button class="btn btn-warning media-action margin-zero" ng-if="showCountdown" ng-click="clearCountdown()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</body>
+<script>
+    window.strings = new buildfire.services.Strings("en-us", stringsConfig);
+    strings.init();
+    function callPlayer(frame_id, func, args) {
+        if (window.jQuery && frame_id instanceof jQuery) frame_id = frame_id.get(0).id;
+        var iframe = document.getElementById(frame_id);
+        if (iframe && iframe.tagName.toUpperCase() != 'IFRAME') {
+            iframe = iframe.getElementsByTagName('iframe')[0];
+        }
+        if (iframe) {
+            // Frame exists,
+            iframe.contentWindow.postMessage(JSON.stringify({
+                "event": "command",
+                "func": func,
+                "args": args || [],
+                "id": frame_id
+            }), "*");
+        }
+    }
+    // function callVimeoPlayer(iframeId) {
+    //     var iframe = $('#' + iframeId)[0];
+    //     var url = 'https://player.vimeo.com';
+    //     /*   if (iframe.src.indexOf('https') == 0)
+    //      url = 'https://player.vimeo.com';*/
+    //     iframe.contentWindow.postMessage({method: 'pause'}, url);
+    // }
+</script>
+</html>
