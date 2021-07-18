@@ -100,5 +100,44 @@
                 return deferred.promise;
             };
             return DB;
+        }]).factory("AppDB", ['Buildfire', '$q', 'MESSAGES', 'CODES', function (Buildfire, $q, MESSAGES, CODES) {
+            function AppDB() {};
+
+            // Global Playlist Limit get and set
+            AppDB.prototype.get = () => {
+                const tagName = "GlobalPlayListSettings";
+                var deferred = $q.defer();
+                Buildfire.appData.get(tagName, (err, result) => {
+                    if (err && err.code == CODES.NOT_FOUND) {
+                        return deferred.resolve();
+                    }
+                    else if (err) {
+                        return deferred.reject(err);
+                    }
+                    else {
+                        return deferred.resolve(result);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            AppDB.prototype.save = function (limit) {
+                const tagName = "GlobalPlayListSettings";
+                var deferred = $q.defer();
+
+                Buildfire.appData.save({globalPlaylistLimit: limit}, tagName, function (err, result) {
+                    if (err) {
+                        return deferred.reject(err);
+                    }
+                    else if (result) {
+                        return deferred.resolve(result);
+                    } else {
+                        return deferred.reject(new Error(MESSAGES.ERROR.NOT_FOUND));
+                    }
+                });
+                return deferred.promise;
+            };
+
+            return AppDB;
         }]);
 })(window.angular, window.buildfire, window.location);

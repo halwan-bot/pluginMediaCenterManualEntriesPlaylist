@@ -45,26 +45,30 @@
                     controllerAs: 'WidgetMedia',
                     controller: 'WidgetMediaCtrl',
                     resolve: {
-                        media: ['$q', 'DB', 'COLLECTIONS', 'Location', '$route', function ($q, DB, COLLECTIONS, Location, $route) {
+                        media: ['$q', 'DB', 'AppDB', 'COLLECTIONS', 'Location', '$route', function ($q, DB, AppDB, COLLECTIONS, Location, $route) {
 
                             var deferred = $q.defer();
-                            var MediaContent = new DB(COLLECTIONS.MediaContent);
-                            if ($route.current.params.mediaId) {
-                                MediaContent.getById($route.current.params.mediaId).then(function success(result) {
-                                    if (result && result.data) {
-                                        deferred.resolve(result);
-                                    }
-                                    else {
-                                        Location.goToHome();
-                                    }
-                                },
-                                    function fail() {
-                                        Location.goToHome();
-                                    }
-                                );
+                            var GlobalPlaylist = new AppDB();
+
+                            const getGlobalPlaylistItems = (mediaId) => {
+                                    GlobalPlaylist.get()
+                                    .then(result => {
+                                        if (!result.data.playlist) {
+                                            // If there is no object, then create the parent object
+                                            Location.goToHome();
+                                        } else {
+                                            let mediaItem = {id: mediaId, data: result.data.playlist[mediaId]};
+
+                                            if (mediaItem) {
+                                                deferred.resolve(mediaItem);
+                                            } else {
+                                                Location.goToHome();
+                                            }
+                                        }
+                                })
                             }
-                            else {
-                                Location.goToHome();
+                            if ($route.current.params.mediaId) {
+                                getGlobalPlaylistItems($route.current.params.mediaId);
                             }
                             return deferred.promise;
                         }]
@@ -85,25 +89,29 @@
                     controllerAs: 'NowPlaying',
                     controller: 'NowPlayingCtrl',
                     resolve: {
-                        media: ['$q', 'DB', 'COLLECTIONS', 'Location', '$route', function ($q, DB, COLLECTIONS, Location, $route) {
+                        media: ['$q', 'DB', 'AppDB', 'COLLECTIONS', 'Location', '$route', function ($q, DB, AppDB, COLLECTIONS, Location, $route) {
                             var deferred = $q.defer();
-                            var MediaContent = new DB(COLLECTIONS.MediaContent);
-                            if ($route.current.params.mediaId) {
-                                MediaContent.getById($route.current.params.mediaId).then(function success(result) {
-                                    if (result && result.data) {
-                                        deferred.resolve(result);
-                                    }
-                                    else {
-                                        Location.goToHome();
-                                    }
-                                },
-                                    function fail() {
-                                        Location.goToHome();
-                                    }
-                                );
+                            var GlobalPlaylist = new AppDB();
+
+                            const getGlobalPlaylistItems = (mediaId) => {
+                                    GlobalPlaylist.get()
+                                    .then(result => {
+                                        if (!result.data.playlist) {
+                                            // If there is no object, then create the parent object
+                                            Location.goToHome();
+                                        } else {
+                                            let mediaItem = {id: mediaId, data: result.data.playlist[mediaId]};
+
+                                            if (mediaItem) {
+                                                deferred.resolve(mediaItem);
+                                            } else {
+                                                Location.goToHome();
+                                            }
+                                        }
+                                })
                             }
-                            else {
-                                Location.goToHome();
+                            if ($route.current.params.mediaId) {
+                                getGlobalPlaylistItems($route.current.params.mediaId);
                             }
                             return deferred.promise;
                         }]

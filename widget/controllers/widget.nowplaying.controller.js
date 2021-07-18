@@ -1,14 +1,14 @@
 (function (angular) {
     angular
         .module('mediaCenterWidget')
-        .controller('NowPlayingCtrl', ['$scope', 'media', 'Buildfire', 'Modals', 'COLLECTIONS', '$rootScope', 'Location', 'EVENTS', 'PATHS', 'DB',
-            function ($scope, media, Buildfire, Modals, COLLECTIONS, $rootScope, Location, EVENTS, PATHS, DB) {
+        .controller('NowPlayingCtrl', ['$scope', 'media', 'Buildfire', 'Modals', 'COLLECTIONS', '$rootScope', 'Location', 'EVENTS', 'PATHS', 'DB', 'AppDB',
+            function ($scope, media, Buildfire, Modals, COLLECTIONS, $rootScope, Location, EVENTS, PATHS, DB, AppDB) {
                 $rootScope.blackBackground = true;
                 $rootScope.showFeed = false;
                 var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
                 var NowPlaying = this;
                 NowPlaying.swiped = [];
-                NowPlaying.forceAutoPlay=$rootScope.forceAutoPlay;
+                NowPlaying.forceAutoPlay= false; // $rootScope.forceAutoPlay;
                 NowPlaying.transferPlaylist=$rootScope.transferAudioContentToPlayList;
                 media.data.audioUrl = convertDropbox(media.data.audioUrl);
                 NowPlaying.currentTrack = new Track(media.data);
@@ -617,6 +617,7 @@
                     this.isPlayingCurrentTrack = settings.isPlayingCurrentTrack;// tells whether current track is playing or not
                 }
 
+                var GlobalPlaylist = new AppDB();
 
                 Buildfire.datastore.onUpdate(function (event) {
                     switch (event.tag) {
@@ -625,6 +626,19 @@
                                 NowPlaying.item = event;
                                 if (!$scope.$$phase) {
                                     $scope.$digest();
+                                }
+                            }
+                            // Update item in globalPlaylist
+                            if ($rootScope.isInGlobalPlaylist(event.id)) {
+                                if (event.data) {
+                                    GlobalPlaylist.insertAndUpdate(event).then(() => {
+                                        $rootScope.globalPlaylistItems.playlist[event.id] = event.data;
+                                    });
+                                } else {
+                                    // If there is no data, it means the the item has been deleted
+                                    GlobalPlaylist.delete(event.id).then(() => {
+                                        delete $rootScope.globalPlaylistItems.playlist[event.id];
+                                    });
                                 }
                             }
                             var MediaCenter = new DB(COLLECTIONS.MediaCenter);
@@ -639,19 +653,17 @@
                             if (event.data) {
                                 buildfire.spinner.show();
                                 $rootScope.design = event.data.design;
-                                $rootScope.allowShare = event.data.content.allowShare;
-                                $rootScope.allowSource = event.data.content.allowSource;
-                                $rootScope.transferAudioContentToPlayList = event.data.content.transferAudioContentToPlayList;
-                                $rootScope.forceAutoPlay = event.data.content.forceAutoPlay;
-                                NowPlaying.forceAutoPlay = event.data.content.transferAudioContentToPlayList;
-                                NowPlaying.transferPlaylist = event.data.content.forceAutoPlay;
+                                // $rootScope.allowShare = event.data.content.allowShare;
+                                // $rootScope.allowSource = event.data.content.allowSource;
+                                $rootScope.transferAudioContentToPlayList = false; // event.data.content.transferAudioContentToPlayList;
+                                $rootScope.forceAutoPlay = false; // event.data.content.forceAutoPlay;
+                                NowPlaying.forceAutoPlay = false; // event.data.content.transferAudioContentToPlayList;
+                                NowPlaying.transferPlaylist = false; // event.data.content.forceAutoPlay;
                                 $rootScope.skipMediaPage = event.data.design.skipMediaPage;
 
                                 $rootScope.autoPlay = event.data.content.autoPlay;
                                 $rootScope.autoPlayDelay = event.data.content.autoPlayDelay;
                                 $rootScope.globalPlaylist = event.data.content.globalPlaylist;
-                                $rootScope.globalPlaylistPluginName = event.data.content.globalPlaylistPluginName;
-                                $rootScope.globalPlaylistPluginInstalled = event.data.content.globalPlaylistPluginInstalled;
 
                                 // Update Data in media contoller
                                 $rootScope.refreshItems();
@@ -668,8 +680,8 @@
                     const globalPlaylistTag = 'MediaContent' + ($rootScope.user && $rootScope.user._id ? $rootScope.user._id : Buildfire.context.deviceId ? Buildfire.context.deviceId : 'globalPlaylist');
                     if (event) {
                         if (event.tag === "GlobalPlayListSettings") {
-                            if (event.data && typeof event.data.globalPlayListLimit !== 'undefined') {
-                                $rootScope.globalPlayListLimit = event.data.globalPlayListLimit;
+                            if (event.data && typeof event.data.globalPlaylistLimit !== 'undefined') {
+                                $rootScope.globalPlaylistLimit = event.data.globalPlaylistLimit;
                             }
                         } else if (event.tag === globalPlaylistTag) {
                             if (event.data.playlist && event.data.playlist) {

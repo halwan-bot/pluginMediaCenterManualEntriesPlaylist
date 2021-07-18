@@ -3,20 +3,7 @@
         <button type="button" class="active">General</button>
     </div> -->
  <!--    <div class="general-screen"> -->
-        <div>
-            <div class="setting-toggle">
-            <p class="setting-label">
-                Allow Sharing
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.content.allowShare}" ng-click="Settings.setAllowShare(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.allowShare}" ng-click="Settings.setAllowShare(false)">Off</button>
-            </div>
-            </div>
-            <div class="setting-toggle-children">
-            </div>
-        </div>
-        <div>
+        <!-- <div>
             <div class="setting-toggle">
             <p class="setting-label">
                 Show Source Icon
@@ -28,24 +15,8 @@
             </div>
             <div class="setting-toggle-children">
             </div>
-        </div>
-        <div>
-            <div class="setting-toggle">
-            <p class="setting-label">
-                Skip Info Page
-                <span class="customTooltipBox btn-primary">
-                <span class="customTooltipText">
-                    If the info page is skipped, the video URL will be prioritized.
-                </span>
-                </span>
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(false)">Off</button>
-            </div>
-            </div>
-        </div>
-        <div>
+        </div> -->
+        <!-- <div>
             <div class="setting-toggle">
             <p class="setting-label">
                 Play All Audio Files
@@ -63,7 +34,24 @@
             </div>
             <div class="setting-toggle-children">
             </div>
+        </div> -->
+        <div>
+            <div class="setting-toggle">
+            <p class="setting-label">
+                Skip Info Page
+                <span class="customTooltipBox btn-primary">
+                <span class="customTooltipText">
+                    If the info page is skipped, the video URL will be prioritized.
+                </span>
+                </span>
+            </p>
+            <div class="buttons">
+                <button ng-class="{'active': Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(true)">On</button>
+                <button class="toLeft" ng-class="{'active': !Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(false)">Off</button>
+            </div>
+            </div>
         </div>
+        
         <div class="setting-toggle">
             <p class="setting-label">
                 Auto Play
@@ -105,48 +93,16 @@
         </div>
         <div class="setting-toggle">
             <p class="setting-label">
-                Global Playlist
+                Global Playlist Limit
                 <span class="customTooltipBox btn-primary">
                     <span class="customTooltipText">
-                        Allow the user to add items to a global playlist, and the items added can be viewed in the Media Center Plugin Playlist.
+                        Limit how many items a user can add to the global playlist, 0 = unlimited
                     </span>
                 </span>
             </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.content.globalPlaylist}" ng-click="Settings.setGlobalPlaylist(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.globalPlaylist}" ng-click="Settings.setGlobalPlaylist(false)">Off</button>
+            <div>
+                <input style="width: 200px; height: 42px;" type="number" class="form-control" placeholder="Global Playlist Limit" ng-model="inputs.globalPlaylistLimit" ng-change="Settings.setGlobalPlaylistLimit()" />
             </div>
         </div>
-
-        <div class="setting-toggle" ng-if="Settings.data.content.globalPlaylist">
-            <p class="setting-label">
-                Playlist Feature Installed
-                <span class="customTooltipBox btn-primary">
-                    <span class="customTooltipText">
-                        If you installed Media Center Manual Playlist feature, check this box and add it's name to allow the users to navigate to it through the this feature.
-                        Please don't enable this if you didn't install the Media Center Manual Playlist feature.
-                    </span>
-                </span>
-            </p>
-            <div style="width: 40%">
-                <button ng-class="{'active': Settings.data.content.globalPlaylistPluginInstalled}" ng-click="Settings.setGlobalPlaylistPluginInstalled(true)">Yes</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.globalPlaylistPluginInstalled}" ng-click="Settings.setGlobalPlaylistPluginInstalled(false)">No</button>
-            </div>
-        </div>
-
-        <div class="setting-toggle" ng-if="Settings.data.content.globalPlaylist && Settings.data.content.globalPlaylistPluginInstalled">
-            <p class="setting-label">
-                Playlist Feature Name
-                <span class="customTooltipBox btn-primary">
-                    <span class="customTooltipText">
-                        This is the name of the Media Center Manual Playlist Instance in my features page, where users can find the items they added to the playlist.
-                    </span>
-                </span>
-            </p>
-            <div style="width: 40%">
-                <input type="text" class="form-control" name="Global Playlist Plugin Name" placeholder="Media Center Manual Playlist Feature Name" ng-model="inputs.pluginInstanceName" ng-change="Settings.setGlobalPlaylistPluginName()">
-            </div>
-        </div>
-
 <!--     </div>
 </div> -->

@@ -2,53 +2,55 @@
     'use strict';
     angular
         .module('mediaCenterDesign')
-        .controller('SettingsCtrl', ['$scope', 'COLLECTIONS', 'DB', 'MediaCenterInfo', '$timeout', 'Buildfire', 'EVENTS', 'Messaging', 'Orders', function ($scope, COLLECTIONS, DB, MediaCenterInfo, $timeout, Buildfire, EVENTS, Messaging, Orders) {
+        .controller('SettingsCtrl', ['$scope', 'COLLECTIONS', 'DB', 'AppDB', 'MediaCenterInfo', '$timeout', 'Buildfire', 'EVENTS', 'Messaging', 'Orders', function ($scope, COLLECTIONS, DB, AppDB, MediaCenterInfo, $timeout, Buildfire, EVENTS, Messaging, Orders) {
             var Settings = this;
             Settings.data = {};
             $scope.inputs = {};
             var MediaCenter = new DB(COLLECTIONS.MediaCenter);
+            var GlobalPlayListSettings = new AppDB();
+
             MediaCenter.get().then(function (getData) {
                 Settings.data = getData.data;
-                if (typeof (Settings.data.content.allowShare) == 'undefined')
-                    Settings.data.content.allowShare = true;
+                // if (typeof (Settings.data.content.allowShare) == 'undefined')
+                //     Settings.data.content.allowShare = true;
                 if (typeof (Settings.data.content.allowSource) == 'undefined')
                     Settings.data.content.allowSource = true;
-                if (typeof (Settings.data.content.transferAudioContentToPlayList) == 'undefined')
-                    Settings.data.content.transferAudioContentToPlayList = false;
-                if (typeof (Settings.data.content.forceAutoPlay) == 'undefined')
-                    Settings.data.content.forceAutoPlay = false;
+                // if (typeof (Settings.data.content.transferAudioContentToPlayList) == 'undefined')
+                //     Settings.data.content.transferAudioContentToPlayList = false;
+                // if (typeof (Settings.data.content.forceAutoPlay) == 'undefined')
+                //     Settings.data.content.forceAutoPlay = false;
                 if (typeof (Settings.data.design.skipMediaPage) == 'undefined')
-                    Settings.data.design.skipMediaPage = false;
+                    Settings.data.design.skipMediaPage = true;
                 if (typeof (Settings.data.content.autoPlay) == 'undefined')
                     Settings.data.content.autoPlay = false;
                 if (typeof (Settings.data.content.autoPlayDelay) == 'undefined')
                     Settings.data.content.autoPlayDelay = { label: "Off", value: 0 };
-                if (typeof (Settings.data.content.globalPlaylist) == 'undefined')
-                    Settings.data.content.globalPlaylist = false;
-                if (typeof (Settings.data.content.globalPlaylistPluginInstalled) == 'undefined')
-                    Settings.data.content.globalPlaylistPluginInstalled = false;
-                if (typeof (Settings.data.content.globalPlaylistPluginName) == 'undefined') {
-                    Settings.data.content.globalPlaylistPluginName = '';
-                    $scope.inputs.pluginInstanceName = ''
-                } else $scope.inputs.pluginInstanceName = Settings.data.content.globalPlaylistPluginName;
             }, function (err) {
                 console.error(err);
             });
+
+            GlobalPlayListSettings.get().then(result => {
+                if (result && result.data && typeof result.data.globalPlaylistLimit !== 'undefined') {
+                    $scope.inputs.globalPlaylistLimit = result.data.globalPlaylistLimit;
+                } else {
+                    $scope.inputs.globalPlaylistLimit = 0;
+                };
+            })
 
             Settings.setSettings = function () {
                 MediaCenter.save(Settings.data).then(function (result) {});
             }
 
-            Settings.setForceAutoPlay = function(value){
-                if(value!=Settings.data.content.forceAutoPlay){
-                    if (value === true && Settings.data.content.autoPlay) {
-                        Settings.data.content.autoPlay = false;
-                    }
-                    Settings.data.content.forceAutoPlay=value;
-                    Settings.data.content.transferAudioContentToPlayList=Settings.data.content.forceAutoPlay;
-                    MediaCenter.save(Settings.data).then(function (result) {});
-                }
-            }
+            // Settings.setForceAutoPlay = function(value){
+            //     if(value!=Settings.data.content.forceAutoPlay){
+            //         if (value === true && Settings.data.content.autoPlay) {
+            //             Settings.data.content.autoPlay = false;
+            //         }
+            //         Settings.data.content.forceAutoPlay=value;
+            //         Settings.data.content.transferAudioContentToPlayList=Settings.data.content.forceAutoPlay;
+            //         MediaCenter.save(Settings.data).then(function (result) {});
+            //     }
+            // }
 
             Settings.changeSkipPage = function (value) {
                 if (value!=Settings.data.design.skipMediaPage){
@@ -64,12 +66,12 @@
                 }
             }
 
-            Settings.setAllowShare = function(value){
-                if(value!=Settings.data.content.allowShare){
-                    Settings.data.content.allowShare=value;
-                    MediaCenter.save(Settings.data).then(function (result) {});
-                }
-            }
+            // Settings.setAllowShare = function(value){
+            //     if(value!=Settings.data.content.allowShare){
+            //         Settings.data.content.allowShare=value;
+            //         MediaCenter.save(Settings.data).then(function (result) {});
+            //     }
+            // }
 
             Settings.setAutoPlay = function (value) {
                 if (value != Settings.data.content.autoPlay) {
@@ -81,39 +83,6 @@
                     Settings.data.content.autoPlay = value;
                     MediaCenter.save(Settings.data).then(function (result) { });
                 }
-            };
-
-            Settings.setGlobalPlaylist = function (value) {
-                if (value != Settings.data.content.globalPlaylist) {
-                    if (!value) {
-                        Settings.data.content.globalPlaylistPluginInstalle = false;
-                        Settings.data.content.globalPlaylistPluginName = '';
-                    }
-                    Settings.data.content.globalPlaylist = value;
-                    MediaCenter.save(Settings.data).then(function (result) { });
-                }
-            };
-
-            Settings.setGlobalPlaylistPluginInstalled = function (value) {
-                if (value != Settings.data.content.globalPlaylistPluginInstalled) {
-                    if (!value) {
-                        Settings.data.content.globalPlaylistPluginName = '';
-                    }
-                    Settings.data.content.globalPlaylistPluginInstalled = value;
-                    MediaCenter.save(Settings.data).then(function (result) { });
-                }
-            };
-
-            let delay;
-            Settings.setGlobalPlaylistPluginName = function () {
-                if (delay) clearTimeout(delay);
-
-                delay = setTimeout(() => {
-                    if ($scope.inputs.pluginInstanceName != Settings.data.content.globalPlaylistPluginName) {
-                        Settings.data.content.globalPlaylistPluginName = $scope.inputs.pluginInstanceName;
-                        MediaCenter.save(Settings.data).then(function (result) { });
-                    }
-                }, 700);
             };
             
             Settings.setAutoPlayDelay = function (option) {
@@ -130,6 +99,14 @@
                 { label: "3s", value: 3 },
                 { label: "5s", value: 5 },
             ];
+
+            let delay;
+            Settings.setGlobalPlaylistLimit = function () {
+                if (delay) clearTimeout(delay);
+                delay = setTimeout(() => {
+                        GlobalPlayListSettings.save($scope.inputs.globalPlaylistLimit);
+                }, 700);
+            };
 
             // $scope.$watch(function () {
             //     return Settings.data.content.allowShare && Settings.data.content.allowSource;
