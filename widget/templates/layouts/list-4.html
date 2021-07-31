@@ -11,7 +11,7 @@
             <div class="list-layout" infinite-scroll="WidgetHome.loadMore()"
                  infinite-scroll-distance="1"
                  data-infinite-container=".infinite-scroll-parent"
-                 infinite-scroll-disabled="WidgetHome.noMore">
+                 infinite-scroll-disabled="WidgetHome.glovalPlaylistLoaded">
                 <div ng-repeat="item in WidgetHome.items" ng-if="$index % 2 == 0" class="row text-overlay">
                     <div class="list-item-odd col-xs-6 pull-left clickable " ng-click="WidgetHome.goToMedia($index)">
                         <div class="list-item-media text-center overflow-hidden text-overlay">

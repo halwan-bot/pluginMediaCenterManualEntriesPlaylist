@@ -101,6 +101,11 @@
                     }
                 };
 
+                // To overcome an issue with google showing it's play button on their videos
+                $scope.videoAlreadyPlayed = () => {
+                    return (WidgetMedia.item.data.videoUrl.indexOf('youtu.be') >= 0 || media.data.videoUrl.indexOf('youtube.com') >= 0) && !$scope.videoPlayed;
+                }
+
                 WidgetMedia.videoPlayerConfig = {
                     autoHide: false,
                     preload: "none",
@@ -110,6 +115,7 @@
                         url: "./assets/css/videogular.css"
                     }
                 };
+                
                 WidgetMedia.changeVideoSrc = function () {
                     if (WidgetMedia.item.data.videoUrl){
                         var myType;

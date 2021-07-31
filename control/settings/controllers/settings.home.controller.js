@@ -2,14 +2,14 @@
     'use strict';
     angular
         .module('mediaCenterDesign')
-        .controller('SettingsCtrl', ['$scope', 'COLLECTIONS', 'DB', 'AppDB', 'MediaCenterInfo', '$timeout', 'Buildfire', 'EVENTS', 'Messaging', 'Orders', function ($scope, COLLECTIONS, DB, AppDB, MediaCenterInfo, $timeout, Buildfire, EVENTS, Messaging, Orders) {
+        .controller('SettingsCtrl', ['$scope', 'COLLECTIONS', 'DB', 'AppDB', function ($scope, COLLECTIONS, DB, AppDB) {
             var Settings = this;
             Settings.data = {};
             $scope.inputs = {};
             var MediaCenter = new DB(COLLECTIONS.MediaCenter);
             var GlobalPlayListSettings = new AppDB();
 
-            MediaCenter.get().then(function (getData) {
+            MediaCenter.get().then((getData) => {
                 Settings.data = getData.data;
                 // if (typeof (Settings.data.content.allowShare) == 'undefined')
                 //     Settings.data.content.allowShare = true;
@@ -25,7 +25,7 @@
                     Settings.data.content.autoPlay = false;
                 if (typeof (Settings.data.content.autoPlayDelay) == 'undefined')
                     Settings.data.content.autoPlayDelay = { label: "Off", value: 0 };
-            }, function (err) {
+            }, (err) => {
                 console.error(err);
             });
 
@@ -37,43 +37,28 @@
                 };
             })
 
-            Settings.setSettings = function () {
-                MediaCenter.save(Settings.data).then(function (result) {});
+            Settings.setSettings = () => {
+                MediaCenter.save(Settings.data).then(() => {});
             }
 
-            // Settings.setForceAutoPlay = function(value){
-            //     if(value!=Settings.data.content.forceAutoPlay){
-            //         if (value === true && Settings.data.content.autoPlay) {
-            //             Settings.data.content.autoPlay = false;
-            //         }
-            //         Settings.data.content.forceAutoPlay=value;
-            //         Settings.data.content.transferAudioContentToPlayList=Settings.data.content.forceAutoPlay;
-            //         MediaCenter.save(Settings.data).then(function (result) {});
-            //     }
-            // }
-
-            Settings.changeSkipPage = function (value) {
-                if (value!=Settings.data.design.skipMediaPage){
-                    Settings.data.design.skipMediaPage=value;
-                    MediaCenter.save(Settings.data).then(function (result) {});
+            Settings.changeSkipPage = (value) => {
+                if (value!=Settings.data.design.skipMediaPage) {
+                    if (value === false) {
+                        Settings.data.content.autoPlay = false;
+                    }
+                    Settings.data.design.skipMediaPage = value;
+                    MediaCenter.save(Settings.data).then(() => {});
                 }
             };
 
-            Settings.setAllowSource = function(value){
+            Settings.setAllowSource = (value) => {
                 if(value!=Settings.data.content.allowSource){
                     Settings.data.content.allowSource=value;
-                    MediaCenter.save(Settings.data).then(function (result) {});
+                    MediaCenter.save(Settings.data).then(() => {});
                 }
             }
 
-            // Settings.setAllowShare = function(value){
-            //     if(value!=Settings.data.content.allowShare){
-            //         Settings.data.content.allowShare=value;
-            //         MediaCenter.save(Settings.data).then(function (result) {});
-            //     }
-            // }
-
-            Settings.setAutoPlay = function (value) {
+            Settings.setAutoPlay = (value) => {
                 if (value != Settings.data.content.autoPlay) {
                     if (value === true && Settings.data.content.forceAutoPlay) {
                         Settings.data.content.forceAutoPlay = false;
@@ -81,14 +66,14 @@
                     }
                     if (value === true) Settings.data.design.skipMediaPage = true;
                     Settings.data.content.autoPlay = value;
-                    MediaCenter.save(Settings.data).then(function (result) { });
-                }
+                    MediaCenter.save(Settings.data).then(() => {});
+                };
             };
             
-            Settings.setAutoPlayDelay = function (option) {
+            Settings.setAutoPlayDelay = (option) => {
                 if (option.value != Settings.data.content.autoPlayDelay.value) {
                     Settings.data.content.autoPlayDelay = option;
-                    MediaCenter.save(Settings.data).then(function (result) { });
+                    MediaCenter.save(Settings.data).then(() => {});
                 }
             };
 
@@ -101,19 +86,11 @@
             ];
 
             let delay;
-            Settings.setGlobalPlaylistLimit = function () {
+            Settings.setGlobalPlaylistLimit = () => {
                 if (delay) clearTimeout(delay);
                 delay = setTimeout(() => {
                         GlobalPlayListSettings.save($scope.inputs.globalPlaylistLimit);
                 }, 700);
             };
-
-            // $scope.$watch(function () {
-            //     return Settings.data.content.allowShare && Settings.data.content.allowSource;
-            // }, function () {
-            //     console.log("SSSSSSSSSSSSSSS", Settings.data.content)
-            // });
-
-            /*Background image area ends*/
         }]);
 })(window.angular, window);

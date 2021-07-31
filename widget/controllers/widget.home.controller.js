@@ -216,7 +216,7 @@
                     }
                     updateDelay = setTimeout(() => {
                         $rootScope.refreshItems();
-                    }, 300);
+                    }, 700);
                     
                 };
 
@@ -438,8 +438,9 @@
                                 WidgetHome.isBusy = false;
                                 $rootScope.loadingData = false;
                                 $rootScope.loadingGlobalPlaylist = false;
+                                WidgetHome.glovalPlaylistLoaded = true;
                                 if (!$scope.$$phase && !$scope.$root.$$phase) $scope.$apply();
-                            })
+                            }, 0)
                         });
                     });
                 };

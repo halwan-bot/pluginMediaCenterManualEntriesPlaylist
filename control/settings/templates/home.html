@@ -1,108 +1,69 @@
-<!-- <div class="settings-screen"> -->
-<!--     <div class="tabs">
-        <button type="button" class="active">General</button>
-    </div> -->
- <!--    <div class="general-screen"> -->
-        <!-- <div>
-            <div class="setting-toggle">
-            <p class="setting-label">
-                Show Source Icon
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.content.allowSource}" ng-click="Settings.setAllowSource(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.allowSource}" ng-click="Settings.setAllowSource(false)">Off</button>
-            </div>
-            </div>
-            <div class="setting-toggle-children">
-            </div>
-        </div> -->
-        <!-- <div>
-            <div class="setting-toggle">
-            <p class="setting-label">
-                Play All Audio Files
-                <span class="customTooltipBox btn-primary">
-                <span class="customTooltipText">
-                    When a user plays any audio file, a full list of audio files from the instance will be added to the user’s playlist. 
-                    If this is turned on, the following settings will become hidden: autoplay, add item to playlist, remove item from playlist.
-                </span>
-                </span>
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.content.forceAutoPlay}" ng-click="Settings.setForceAutoPlay(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.forceAutoPlay}" ng-click="Settings.setForceAutoPlay(false)">Off</button>
-            </div>
-            </div>
-            <div class="setting-toggle-children">
-            </div>
-        </div> -->
-        <div>
-            <div class="setting-toggle">
-            <p class="setting-label">
-                Skip Info Page
-                <span class="customTooltipBox btn-primary">
-                <span class="customTooltipText">
-                    If the info page is skipped, the video URL will be prioritized.
-                </span>
-                </span>
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(false)">Off</button>
-            </div>
-            </div>
-        </div>
-        
-        <div class="setting-toggle">
-            <p class="setting-label">
-                Auto Play
-                <span class="customTooltipBox btn-primary">
-                    <span class="customTooltipText">
-                        Allow items auto play, whin this option is on, it will skip info page by default.
-                    </span>
-                </span>
-            </p>
-            <div class="buttons">
-                <button ng-class="{'active': Settings.data.content.autoPlay}" ng-click="Settings.setAutoPlay(true)">On</button>
-                <button class="toLeft" ng-class="{'active': !Settings.data.content.autoPlay}" ng-click="Settings.setAutoPlay(false)">Off</button>
-            </div>
-        </div>
-        <div class="setting-toggle" ng-if="Settings.data.content.autoPlay">
-            <p class="setting-label">
-                Delay
-                <span class="customTooltipBox btn-primary">
-                    <span class="customTooltipText">
-                        The delay before playing the next item.
-                    </span>
-                </span>    
-            </p>
-            <div class="dropdown padding-zero" dropdown is-open="status.isOpen">
-                <button 
-                    style="width: 200px;" 
-                    class="btn btn-default text-left dropdown-toggle" 
-                    dropdown-toggle
-                    aria-expanded="true">
-                    <span class="pull-left">{{Settings.data.content.autoPlayDelay.label || 'Off'}}</span>
-                    <span class="chevron icon-chevron-down pull-right"></span>
-                </button>
-                <ul class="dropdown-menu extended" role="menu">
-                    <li ng-repeat="option in Settings.autoPlayDelayOptions" ng-click="Settings.setAutoPlayDelay(option)">
-                        <a class="transition-third">{{option.label}}</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="setting-toggle">
-            <p class="setting-label">
-                Global Playlist Limit
-                <span class="customTooltipBox btn-primary">
-                    <span class="customTooltipText">
-                        Limit how many items a user can add to the global playlist, 0 = unlimited
-                    </span>
-                </span>
-            </p>
-            <div>
-                <input style="width: 200px; height: 42px;" type="number" class="form-control" placeholder="Global Playlist Limit" ng-model="inputs.globalPlaylistLimit" ng-change="Settings.setGlobalPlaylistLimit()" />
-            </div>
-        </div>
-<!--     </div>
-</div> -->
+<div ng-show="!Settings.data.content.autoPlay">
+    <div class="setting-toggle">
+    <p class="setting-label">
+        Skip Info Page
+        <span class="customTooltipBox btn-primary">
+        <span class="customTooltipText">
+            If the info page is skipped, the video URL will be prioritized.
+        </span>
+        </span>
+    </p>
+    <div class="buttons">
+        <button ng-class="{'active': Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(true)">On</button>
+        <button class="toLeft" ng-class="{'active': !Settings.data.design.skipMediaPage}" ng-click="Settings.changeSkipPage(false)">Off</button>
+    </div>
+    </div>
+</div>
+
+<div class="setting-toggle">
+    <p class="setting-label">
+        Auto Play
+        <span class="customTooltipBox btn-primary">
+            <span class="customTooltipText">
+                Allow items auto play, whin this option is on, it will skip info page by default.
+            </span>
+        </span>
+    </p>
+    <div class="buttons">
+        <button ng-class="{'active': Settings.data.content.autoPlay}" ng-click="Settings.setAutoPlay(true)">On</button>
+        <button class="toLeft" ng-class="{'active': !Settings.data.content.autoPlay}" ng-click="Settings.setAutoPlay(false)">Off</button>
+    </div>
+</div>
+<div class="setting-toggle" ng-if="Settings.data.content.autoPlay">
+    <p class="setting-label">
+        Delay
+        <span class="customTooltipBox btn-primary">
+            <span class="customTooltipText">
+                The delay before playing the next item.
+            </span>
+        </span>    
+    </p>
+    <div class="dropdown padding-zero" dropdown is-open="status.isOpen">
+        <button 
+            style="width: 200px;" 
+            class="btn btn-default text-left dropdown-toggle" 
+            dropdown-toggle
+            aria-expanded="true">
+            <span class="pull-left">{{Settings.data.content.autoPlayDelay.label || 'Off'}}</span>
+            <span class="chevron icon-chevron-down pull-right"></span>
+        </button>
+        <ul class="dropdown-menu extended" role="menu">
+            <li ng-repeat="option in Settings.autoPlayDelayOptions" ng-click="Settings.setAutoPlayDelay(option)">
+                <a class="transition-third">{{option.label}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="setting-toggle">
+    <p class="setting-label">
+        Global Playlist Limit
+        <span class="customTooltipBox btn-primary">
+            <span class="customTooltipText">
+                Limit how many items a user can add to the global playlist, 0 = unlimited
+            </span>
+        </span>
+    </p>
+    <div>
+        <input style="width: 200px; height: 42px;" type="number" class="form-control" placeholder="Global Playlist Limit" ng-model="inputs.globalPlaylistLimit" ng-change="Settings.setGlobalPlaylistLimit()" />
+    </div>
+</div>
